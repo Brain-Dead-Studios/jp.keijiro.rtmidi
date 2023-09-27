@@ -62,7 +62,7 @@ namespace RtMidi
         }
 
         // RtMidi API
-
+#if !UNITY_WEBGL || UNITY_EDITOR
         [DllImport("RtMidi.dll", EntryPoint="rtmidi_get_compiled_api")]
         public static extern
         int GetCompiledApi(Api [] apis, uint apis_size);
@@ -151,5 +151,28 @@ namespace RtMidi
         [DllImport("RtMidi.dll", EntryPoint="rtmidi_out_send_message")]
         public static extern
         int OutSendMessage(Wrapper* device, byte* message, int length);
+#else
+        public static int GetCompiledApi(Api[] apis, uint apis_size) { return 0; }
+        public static IntPtr ApiName(Api api) { return IntPtr.Zero; }
+        public static IntPtr ApiDisplayName(Api api) { return IntPtr.Zero; }
+        public static Api CompiledApiByName(string name) { return Api.Unspecified; }
+        public static void OpenPort(Wrapper* device, uint portNumber, string portName) { }
+        public static void OpenVirtualPort(Wrapper* device, string portName) { }
+        public static void ClosePort(Wrapper* device) { }
+        public static uint GetPortCount(Wrapper* device) { return 0; }
+        public static IntPtr GetPortName(Wrapper* device, uint portNumber) { return IntPtr.Zero; }
+        public static Wrapper* InCreateDefault() { return null; }
+        public static Wrapper* InCreate(Api api, string clientName, uint queueSizeLimit) { return null; }
+        public static void InFree(Wrapper* device) { }
+        public static Api InGetCurrentApi(Wrapper* device) { return Api.Unspecified; }
+        public static void InIgnoreTypes(Wrapper* device, bool midiSysex, bool midiTime, bool midiSense) { }
+        public static double InGetMessage(Wrapper* device, byte* message, ref ulong size) { return 0; }
+        public static Wrapper* OutCreateDefault() { return null; }
+        public static Wrapper* OutCreate(Api api, string clientName) { return null; }
+        public static void OutFree(Wrapper* device) { }
+        public static Api OutGetCurrentApi(Wrapper* device) { return Api.Unspecified; }
+        public static int OutSendMessage(Wrapper* device, byte* message, int length) { return 0; }
+
+#endif
     }
 }
